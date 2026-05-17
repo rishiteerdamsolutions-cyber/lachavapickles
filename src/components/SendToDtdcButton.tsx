@@ -37,7 +37,7 @@ export default function SendToDtdcButton({ order, onSent }: Props) {
         className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-semibold text-ink hover:border-accent/40 transition-colors"
       >
         <Truck className="h-3.5 w-3.5" />
-        WhatsApp DTDC
+        Send delivery to DTDC (WhatsApp)
       </a>
       {!sent && (
         <button

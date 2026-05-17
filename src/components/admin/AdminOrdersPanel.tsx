@@ -23,9 +23,16 @@ export default function AdminOrdersPanel() {
   return (
     <div className="p-6 sm:p-8">
       <h1 className="font-display text-2xl text-ink">Orders</h1>
-      <p className="text-sm text-muted mt-1">
-        {orders.length} orders · MongoDB required for persistence
-      </p>
+      <p className="text-sm text-muted mt-1">{orders.length} orders</p>
+
+      <div className="mt-4 rounded-xl border border-forest/30 bg-forest-soft px-4 py-3 text-sm text-ink-muted">
+        <p className="font-semibold text-forest">DTDC via WhatsApp</p>
+        <p className="mt-1">
+          Paid orders: click <strong className="text-ink">WhatsApp DTDC</strong> to open WhatsApp
+          with customer name, phone, address, and items pre-filled for DTDC pickup. Then tap{" "}
+          <strong className="text-ink">Mark sent</strong> after you dispatch.
+        </p>
+      </div>
 
       {loading ? (
         <p className="mt-8 text-muted">Loading…</p>
