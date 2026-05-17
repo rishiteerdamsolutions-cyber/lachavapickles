@@ -50,10 +50,8 @@ html {
 }
 
 @media print {
-  header,
-  footer[class*="bg-ink"]:not(article footer),
   nav,
-  .print\\:hidden {
+  header {
     display: none !important;
   }
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Noto_Sans_Telugu } from "next/font/google";
 import QuotationCard from "@/components/QuotationCard";
@@ -14,7 +15,7 @@ const telugu = Noto_Sans_Telugu({
   variable: "--font-telugu",
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "సేవా అంచనా పత్రం",
   robots: { index: false, follow: false },
 };
