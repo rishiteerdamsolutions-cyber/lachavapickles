@@ -37,6 +37,13 @@ Admin **will not work** on the live site until these environment variables are s
 
 Without `ADMIN_USERNAME` and `ADMIN_PASSWORD`, login shows: *Admin is not configured on the server*.
 
+## Demo payments
+
+By default, **Pay** marks the order as **paid** immediately (no Razorpay popup). Orders are saved for admin (`/admin/orders`).
+
+- Enable: `DEMO_PAYMENTS=true` or leave Razorpay keys unset  
+- Disable for real payments: `DEMO_PAYMENTS=false` + Razorpay keys
+
 ## Brand assets
 
 - `public/logo.png` — navbar & social preview  

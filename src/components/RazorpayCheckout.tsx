@@ -41,12 +41,45 @@ function loadRazorpay(): Promise<boolean> {
   });
 }
 
+type CreateOrderResponse = {
+  demo?: boolean;
+  orderId: string;
+  displayOrderId: string;
+  paymentId?: string;
+  amountINR?: number;
+  paymentStatus?: string;
+  items?: { productName: string; variantLabel: string; quantity: number }[];
+  amount?: number;
+  currency?: string;
+  key?: string;
+  error?: string;
+};
+
 export default function RazorpayCheckout({ customer, disabled }: Props) {
   const { items, totalINR, clearCart } = useCart();
   const { setLastOrder } = useOrder();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const finishOrder = (data: CreateOrderResponse) => {
+    const success = {
+      orderId: data.orderId,
+      displayOrderId: data.displayOrderId,
+      paymentId: data.paymentId || `demo_${data.orderId}`,
+      amountINR: data.amountINR ?? totalINR,
+      items: data.items ?? items.map((i) => ({
+        productName: i.productName,
+        variantLabel: i.variantLabel,
+        quantity: i.quantity,
+      })),
+      paymentStatus: data.paymentStatus || "paid",
+    };
+    setLastOrder(success);
+    sessionStorage.setItem("orderSuccess", JSON.stringify(success));
+    clearCart();
+    router.push("/checkout/success");
+  };
 
   const handlePay = async () => {
     if (disabled || items.length === 0) return;
@@ -68,8 +101,13 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
           customer,
         }),
       });
-      const order = await res.json();
+      const order: CreateOrderResponse = await res.json();
       if (!res.ok) throw new Error(order.error || "Could not create order");
+
+      if (order.demo) {
+        finishOrder(order);
+        return;
+      }
 
       const loaded = await loadRazorpay();
       if (!loaded) throw new Error("Payment gateway failed to load");
@@ -105,27 +143,7 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
             setError(data.error || "Payment verification failed");
             return;
           }
-          setLastOrder({
-            orderId: data.orderId,
-            displayOrderId: data.displayOrderId,
-            paymentId: data.paymentId,
-            amountINR: data.amountINR,
-            items: data.items,
-            paymentStatus: data.paymentStatus || "paid",
-          });
-          sessionStorage.setItem(
-            "orderSuccess",
-            JSON.stringify({
-              orderId: data.orderId,
-              displayOrderId: data.displayOrderId,
-              paymentId: data.paymentId,
-              amountINR: data.amountINR,
-              items: data.items,
-              paymentStatus: data.paymentStatus || "paid",
-            })
-          );
-          clearCart();
-          router.push("/checkout/success");
+          finishOrder(data);
         },
         theme: { color: "#e85d2c" },
       });
@@ -146,8 +164,11 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
         disabled={disabled || loading || items.length === 0}
         className="w-full min-h-[48px] rounded-full bg-accent px-6 font-semibold text-white hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? "Processing…" : "Pay with Razorpay"}
+        {loading ? "Processing…" : "Place order (demo — auto paid)"}
       </button>
+      <p className="mt-2 text-center text-xs text-muted">
+        Demo mode: payment is marked paid instantly. Order appears in admin.
+      </p>
     </div>
   );
 }

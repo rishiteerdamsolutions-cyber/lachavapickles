@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
+import { isDemoPaymentsEnabled } from "@/lib/demo-payments";
 import { getRazorpay } from "@/lib/razorpay";
 import { saveOrder } from "@/lib/order-store";
-import { saveOrderToDb } from "@/lib/orders-db";
+import { createPaidOrder, saveOrderToDb } from "@/lib/orders-db";
 import { generateDisplayOrderId } from "@/lib/order-id";
 
 export async function POST(req: NextRequest) {
@@ -17,13 +19,6 @@ export async function POST(req: NextRequest) {
     }
 
     const displayOrderId = generateDisplayOrderId();
-    const razorpay = getRazorpay();
-    const order = await razorpay.orders.create({
-      amount: Math.round(amountINR * 100),
-      currency: "INR",
-      receipt: displayOrderId,
-    });
-
     const orderItems = items.map(
       (i: {
         productName: string;
@@ -49,6 +44,38 @@ export async function POST(req: NextRequest) {
       country: customer.country || "India",
     };
 
+    if (isDemoPaymentsEnabled()) {
+      const orderId = `demo_${crypto.randomUUID()}`;
+      const paymentId = `demo_pay_${Date.now()}`;
+
+      await createPaidOrder(
+        orderId,
+        displayOrderId,
+        paymentId,
+        orderItems,
+        amountINR,
+        customerData
+      );
+
+      return NextResponse.json({
+        demo: true,
+        orderId,
+        displayOrderId,
+        paymentId,
+        amountINR,
+        paymentStatus: "paid",
+        items: orderItems,
+        customer: customerData,
+      });
+    }
+
+    const razorpay = getRazorpay();
+    const order = await razorpay.orders.create({
+      amount: Math.round(amountINR * 100),
+      currency: "INR",
+      receipt: displayOrderId,
+    });
+
     saveOrder({
       orderId: order.id,
       displayOrderId,
@@ -60,6 +87,7 @@ export async function POST(req: NextRequest) {
     await saveOrderToDb(order.id, displayOrderId, orderItems, amountINR, customerData);
 
     return NextResponse.json({
+      demo: false,
       orderId: order.id,
       displayOrderId,
       amount: order.amount,
