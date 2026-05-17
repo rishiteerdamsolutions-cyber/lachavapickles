@@ -48,3 +48,12 @@ html {
   background: #e85d2c33;
   color: #141110;
 }
+
+@media print {
+  header,
+  footer[class*="bg-ink"]:not(article footer),
+  nav,
+  .print\\:hidden {
+    display: none !important;
+  }
+}
