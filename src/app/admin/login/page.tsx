@@ -9,11 +9,13 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [configured, setConfigured] = useState(true);
 
   useEffect(() => {
     fetch("/api/admin/login")
       .then((r) => r.json())
       .then((d) => {
+        setConfigured(d.configured !== false);
         if (d.authenticated) router.replace("/admin/orders");
       });
   }, [router]);
@@ -44,6 +46,18 @@ export default function AdminLoginPage() {
       >
         <h1 className="font-display text-2xl text-ink text-center">Lachava Admin</h1>
         <p className="text-center text-sm text-muted mt-1 mb-6">Products & orders</p>
+        {!configured && (
+          <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-950">
+            <p className="font-semibold">Admin not configured on this server</p>
+            <p className="mt-1 text-amber-900/90">
+              In Vercel → Settings → Environment Variables, add{" "}
+              <code className="text-xs bg-amber-100 px-1 rounded">ADMIN_USERNAME</code>,{" "}
+              <code className="text-xs bg-amber-100 px-1 rounded">ADMIN_PASSWORD</code>, and{" "}
+              <code className="text-xs bg-amber-100 px-1 rounded">SESSION_SECRET</code>, then
+              redeploy.
+            </p>
+          </div>
+        )}
         {error && (
           <p className="mb-4 text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
         )}

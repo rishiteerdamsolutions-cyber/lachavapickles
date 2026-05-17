@@ -4,6 +4,10 @@ import crypto from "crypto";
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? "";
 const SESSION_SECRET = process.env.SESSION_SECRET || "lachava-admin-secret";
 
+export function isAdminConfigured(): boolean {
+  return Boolean(process.env.ADMIN_USERNAME?.trim() && process.env.ADMIN_PASSWORD?.trim());
+}
+
 export function createAdminToken(): string {
   const timestamp = Date.now().toString();
   const signature = crypto
