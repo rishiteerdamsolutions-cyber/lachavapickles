@@ -37,12 +37,17 @@ export const metadata: Metadata = {
   description:
     "Handcrafted Telangana pickles — Avakaya, Gongura, prawn, chicken & more. No preservatives. Ships pan India.",
   icons: {
-    icon: BRAND.favicon,
+    icon: [
+      { url: BRAND.favicon, sizes: "any" },
+      { url: BRAND.faviconPng, type: "image/png", sizes: "512x512" },
+    ],
+    apple: BRAND.faviconPng,
   },
   openGraph: {
     title: "Lachava Telangana Pickles",
     description: "Ammamma Cheyyi Ruchi — Handcrafted in Nizamabad",
     type: "website",
+    images: [{ url: BRAND.logo, width: 1200, height: 630, alt: "Lachava Telangana Pickles" }],
   },
 };
 
