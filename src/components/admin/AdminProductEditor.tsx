@@ -138,20 +138,39 @@ export default function AdminProductEditor({
             />
           </label>
 
-          <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Subtitle</span>
-            <input
-              value={product.subtitle}
-              onChange={(e) => update("subtitle", e.target.value)}
-              className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
-            />
-          </label>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <label className="block">
+              <span className="text-xs font-semibold text-muted uppercase">Subtitle (EN)</span>
+              <input
+                value={product.subtitle}
+                onChange={(e) => update("subtitle", e.target.value)}
+                className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-semibold text-muted uppercase">Subtitle (TE)</span>
+              <input
+                value={product.subtitleTelugu ?? ""}
+                onChange={(e) => update("subtitleTelugu", e.target.value)}
+                className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
+              />
+            </label>
+          </div>
 
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Description</span>
+            <span className="text-xs font-semibold text-muted uppercase">Description (EN)</span>
             <textarea
               value={product.description}
               onChange={(e) => update("description", e.target.value)}
+              rows={4}
+              className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold text-muted uppercase">Description (TE)</span>
+            <textarea
+              value={product.descriptionTelugu ?? ""}
+              onChange={(e) => update("descriptionTelugu", e.target.value)}
               rows={4}
               className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
             />

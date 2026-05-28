@@ -1,4 +1,4 @@
-import ProductListing from "@/components/ProductListing";
+import ProductListingPage from "@/components/ProductListingPage";
 
 export const metadata = {
   title: "Non-Veg Pickles",
@@ -6,11 +6,5 @@ export const metadata = {
 };
 
 export default function NonVegPicklesPage() {
-  return (
-    <ProductListing
-      category="non-veg"
-      title="Non-veg pickles"
-      subtitle="Royyala, chicken & more — refrigerate after opening"
-    />
-  );
+  return <ProductListingPage category="non-veg" />;
 }

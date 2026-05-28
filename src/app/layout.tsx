@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
+import { Instrument_Serif, Plus_Jakarta_Sans, Noto_Sans_Telugu } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import Navbar from "@/components/Navbar";
@@ -16,6 +16,12 @@ const instrument = Instrument_Serif({
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-jakarta",
+});
+
+const telugu = Noto_Sans_Telugu({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["telugu"],
+  variable: "--font-telugu",
 });
 
 export const viewport: Viewport = {
@@ -57,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${instrument.variable} ${jakarta.variable}`}>
+    <html lang="en" className={`${instrument.variable} ${jakarta.variable} ${telugu.variable}`}>
       <body className="antialiased bg-surface text-ink min-h-screen flex flex-col">
         <Providers>
           <Navbar />

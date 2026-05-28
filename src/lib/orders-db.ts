@@ -32,6 +32,7 @@ export interface Order {
   customer: OrderCustomer;
   createdAt: Date | string;
   dtdcSentAt?: Date | string;
+  adminNotes?: string;
 }
 
 const COLLECTION = "orders";
@@ -165,6 +166,18 @@ export async function markDtdcSent(orderId: string): Promise<void> {
     orders[idx] = { ...orders[idx], dtdcSentAt: new Date().toISOString() };
     await persistOrders(orders);
   }
+}
+
+export async function updateOrder(
+  orderId: string,
+  patch: Partial<Pick<Order, "paymentStatus" | "adminNotes">>
+): Promise<Order | null> {
+  const orders = await getOrders();
+  const idx = orders.findIndex((o) => o.orderId === orderId);
+  if (idx < 0) return null;
+  orders[idx] = { ...orders[idx], ...patch };
+  await persistOrders(orders);
+  return orders[idx];
 }
 
 export function invalidateOrdersCache(): void {

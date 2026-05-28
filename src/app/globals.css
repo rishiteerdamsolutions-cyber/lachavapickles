@@ -13,7 +13,7 @@
   --color-forest-soft: #e8f0ed;
   --color-border: #e2ddd4;
 
-  --font-sans: var(--font-jakarta);
+  --font-sans: var(--font-jakarta), var(--font-telugu);
   --font-display: var(--font-instrument);
 }
 

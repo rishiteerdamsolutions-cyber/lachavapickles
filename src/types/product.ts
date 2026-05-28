@@ -24,7 +24,9 @@ export interface PickleProduct {
   name: string;
   nameTelugu?: string;
   subtitle: string;
+  subtitleTelugu?: string;
   description: string;
+  descriptionTelugu?: string;
   category: ProductCategory;
   spiceLevel: number;
   tag: ProductTag;

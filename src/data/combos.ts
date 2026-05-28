@@ -1,10 +1,15 @@
 export interface ComboPack {
   id: string;
   name: string;
+  nameTelugu?: string;
   description: string;
+  descriptionTelugu?: string;
   items: string;
+  itemsTelugu?: string;
   priceINR: number;
   originalPriceINR: number;
+  available?: boolean;
+  updatedAt?: string;
 }
 
 export const comboPacks: ComboPack[] = [

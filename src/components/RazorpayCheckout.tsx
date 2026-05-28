@@ -4,6 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useOrder } from "@/context/OrderContext";
+import { useLanguage } from "@/context/LanguageContext";
+
+function isClientDemoPayments(): boolean {
+  if (process.env.NEXT_PUBLIC_DEMO_PAYMENTS === "false") return false;
+  if (process.env.NEXT_PUBLIC_DEMO_PAYMENTS === "true") return true;
+  return !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
+}
 
 declare global {
   interface Window {
@@ -58,6 +65,8 @@ type CreateOrderResponse = {
 export default function RazorpayCheckout({ customer, disabled }: Props) {
   const { items, totalINR, clearCart } = useCart();
   const { setLastOrder } = useOrder();
+  const { t } = useLanguage();
+  const demo = isClientDemoPayments();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -164,10 +173,14 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
         disabled={disabled || loading || items.length === 0}
         className="w-full min-h-[48px] rounded-full bg-accent px-6 font-semibold text-white hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? "Processing…" : "Place order (demo — auto paid)"}
+        {loading
+          ? "Processing…"
+          : demo
+            ? t("checkout.placeOrder")
+            : t("checkout.placeOrder")}
       </button>
       <p className="mt-2 text-center text-xs text-muted">
-        Demo mode: payment is marked paid instantly. Order appears in admin.
+        {demo ? t("checkout.demoNote") : t("checkout.liveNote")}
       </p>
     </div>
   );

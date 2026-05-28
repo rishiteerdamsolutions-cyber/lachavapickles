@@ -1,4 +1,4 @@
-import ProductListing from "@/components/ProductListing";
+import ProductListingPage from "@/components/ProductListingPage";
 
 export const metadata = {
   title: "Veg Pickles",
@@ -6,11 +6,5 @@ export const metadata = {
 };
 
 export default function VegPicklesPage() {
-  return (
-    <ProductListing
-      category="veg"
-      title="Veg pickles"
-      subtitle="Avakaya, Gongura, and more — stone-ground, sun-dried"
-    />
-  );
+  return <ProductListingPage category="veg" />;
 }

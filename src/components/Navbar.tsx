@@ -4,18 +4,21 @@ import Link from "next/link";
 import { useState } from "react";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useLanguage } from "@/context/LanguageContext";
 import BrandLogo from "@/components/BrandLogo";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const links = [
-  { href: "/veg-pickles", label: "Veg" },
-  { href: "/non-veg-pickles", label: "Non-Veg" },
-  { href: "/combos", label: "Combos" },
-  { href: "/story", label: "Story" },
-  { href: "/contact", label: "Contact" },
-];
+  { href: "/veg-pickles", key: "nav.veg" },
+  { href: "/non-veg-pickles", key: "nav.nonveg" },
+  { href: "/combos", key: "nav.combos" },
+  { href: "/story", key: "nav.story" },
+  { href: "/contact", key: "nav.contact" },
+] as const;
 
 export default function Navbar() {
   const { itemCount } = useCart();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
 
   return (
@@ -30,22 +33,23 @@ export default function Navbar() {
               href={l.href}
               className="rounded-full px-4 py-2 text-sm font-medium text-muted hover:text-ink hover:bg-surface transition-colors"
             >
-              {l.label}
+              {t(l.key)}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-1">
+          <LanguageToggle className="hidden sm:inline-flex" />
           <Link
             href="/veg-pickles"
             className="hidden sm:inline-flex rounded-full bg-ink px-4 py-2 text-sm font-semibold text-surface hover:bg-ink-muted transition-colors"
           >
-            Shop
+            {t("nav.shop")}
           </Link>
           <Link
             href="/cart"
             className="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface transition-colors"
-            aria-label="Cart"
+            aria-label={t("nav.cart")}
           >
             <ShoppingBag className="h-5 w-5 text-ink" strokeWidth={1.75} />
             {itemCount > 0 && (
@@ -67,6 +71,9 @@ export default function Navbar() {
 
       {open && (
         <nav className="lg:hidden border-t border-border px-4 py-4 space-y-1 bg-surface-elevated">
+          <div className="px-3 pb-2">
+            <LanguageToggle />
+          </div>
           {links.map((l) => (
             <Link
               key={l.href}
@@ -74,7 +81,7 @@ export default function Navbar() {
               onClick={() => setOpen(false)}
               className="block rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-surface"
             >
-              {l.label}
+              {t(l.key)}
             </Link>
           ))}
           <Link
@@ -82,7 +89,7 @@ export default function Navbar() {
             onClick={() => setOpen(false)}
             className="block rounded-lg bg-accent px-3 py-3 text-center font-semibold text-white mt-2"
           >
-            Shop pickles
+            {t("nav.shopPickles")}
           </Link>
         </nav>
       )}

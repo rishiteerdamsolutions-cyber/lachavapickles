@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "orderId required" }, { status: 400 });
   }
 
-  let pending = getOrder(orderId);
+  const pending = getOrder(orderId);
   let displayOrderId = pending?.displayOrderId;
   let amountINR = pending?.amountINR ?? 0;
   let items = pending?.items ?? [];

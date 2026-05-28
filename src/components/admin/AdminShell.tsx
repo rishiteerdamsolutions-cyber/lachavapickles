@@ -2,12 +2,24 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Package, ShoppingBag, LogOut } from "lucide-react";
+import {
+  Package,
+  ShoppingBag,
+  LogOut,
+  LayoutDashboard,
+  Layers,
+  Settings,
+  BarChart3,
+} from "lucide-react";
 import { cn } from "@/lib/cn";
 
 const nav = [
+  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/combos", label: "Combos", icon: Layers },
+  { href: "/admin/settings", label: "Site settings", icon: Settings },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

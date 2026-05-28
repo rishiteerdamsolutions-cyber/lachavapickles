@@ -1,24 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useOrder } from "@/context/OrderContext";
 import { useCurrency } from "@/context/CurrencyContext";
+import type { LastOrder } from "@/context/OrderContext";
+
+function readOrderFromSession(): LastOrder | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem("orderSuccess");
+    return raw ? (JSON.parse(raw) as LastOrder) : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function CheckoutSuccessPage() {
   const { lastOrder } = useOrder();
   const { format } = useCurrency();
-  const [order, setOrder] = useState(lastOrder);
-
-  useEffect(() => {
-    if (lastOrder) return;
-    try {
-      const raw = sessionStorage.getItem("orderSuccess");
-      if (raw) setOrder(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-  }, [lastOrder]);
+  const [sessionOrder] = useState(readOrderFromSession);
+  const order = lastOrder ?? sessionOrder;
 
   if (!order) {
     return (

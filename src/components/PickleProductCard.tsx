@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { PickleProduct, spiceDisplay } from "@/types/product";
+import { useLanguage } from "@/context/LanguageContext";
+import {
+  productDisplayName,
+  productDisplaySubtitle,
+} from "@/lib/product-display";
 import ProductTagBadge, { StockBadge } from "./ProductTagBadge";
 import ProductVisual from "./ProductVisual";
 
@@ -11,8 +16,11 @@ interface Props {
 }
 
 export default function PickleProductCard({ product, formatPrice }: Props) {
+  const { locale, t } = useLanguage();
   const minPrice = Math.min(...product.weightOptions.map((w) => w.priceINR));
   const outOfStock = !product.available || product.tag === "out_of_stock";
+  const name = productDisplayName(product, locale);
+  const subtitle = productDisplaySubtitle(product, locale);
 
   return (
     <Link
@@ -28,16 +36,21 @@ export default function PickleProductCard({ product, formatPrice }: Props) {
           </div>
         </div>
         <div className="p-5">
-          {product.nameTelugu && (
+          {locale === "en" && product.nameTelugu && (
             <p className="text-xs font-medium text-forest">{product.nameTelugu}</p>
           )}
+          {locale === "te" && product.name !== name && (
+            <p className="text-xs font-medium text-muted">{product.name}</p>
+          )}
           <h3 className="mt-1 text-lg font-semibold text-ink group-hover:text-accent transition-colors">
-            {product.name}
+            {name}
           </h3>
-          <p className="text-sm text-muted">{product.subtitle}</p>
+          <p className="text-sm text-muted">{subtitle}</p>
           <p className="mt-2 text-xs text-muted">{spiceDisplay(product.spiceLevel)}</p>
           <p className="mt-3 font-semibold text-accent">
-            {outOfStock ? "Out of stock" : `From ${formatPrice(minPrice)}`}
+            {outOfStock
+              ? t("product.outOfStock")
+              : `${t("product.from")} ${formatPrice(minPrice)}`}
           </p>
         </div>
       </article>

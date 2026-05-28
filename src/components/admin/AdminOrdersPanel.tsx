@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Order } from "@/lib/orders-db";
 import SendToDtdcButton from "@/components/SendToDtdcButton";
+import OrderAdminNotes from "@/components/admin/OrderAdminNotes";
 import { formatINR } from "@/lib/currency";
 
 export default function AdminOrdersPanel() {
@@ -17,8 +18,18 @@ export default function AdminOrdersPanel() {
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    void fetch("/api/admin/orders")
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        setOrders(Array.isArray(data) ? data : []);
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="p-6 sm:p-8">
@@ -77,6 +88,8 @@ export default function AdminOrdersPanel() {
                   </li>
                 ))}
               </ul>
+
+              <OrderAdminNotes order={o} onSaved={load} />
 
               {o.paymentStatus === "paid" && (
                 <div className="mt-4 pt-3 border-t border-border">
