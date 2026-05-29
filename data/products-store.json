@@ -3,7 +3,7 @@
     "id": "avakaya",
     "slug": "avakaya",
     "name": "Avakaya",
-    "nameTelugu": "అవకాయ",
+    "nameTelugu": "\u0c05\u0c35\u0c15\u0c3e\u0c2f",
     "subtitle": "Raw Mango Pickle",
     "description": "Raw mangoes with coarse mustard, fiery red chilli, rock salt, and cold-pressed sesame oil. Aged minimum 7 days.",
     "category": "veg",
@@ -12,7 +12,7 @@
     "available": true,
     "featured": true,
     "displayOrder": 1,
-    "imagePath": "",
+    "imagePath": "/products/avakaya.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -36,7 +36,7 @@
     "id": "gongura-pachadi",
     "slug": "gongura-pachadi",
     "name": "Gongura Pachadi",
-    "nameTelugu": "గోంగూర పచ్చడి",
+    "nameTelugu": "\u0c17\u0c4b\u0c02\u0c17\u0c42\u0c30 \u0c2a\u0c1a\u0c4d\u0c1a\u0c21\u0c3f",
     "subtitle": "Sorrel Leaf Pickle",
     "description": "Tangy gongura with roasted red chillies, garlic, and mustard-sesame oil.",
     "category": "veg",
@@ -64,7 +64,7 @@
     "id": "tomato-pickle",
     "slug": "tomato-pickle",
     "name": "Tomato Pickle",
-    "nameTelugu": "టమాటా పచ్చడి",
+    "nameTelugu": "\u0c1f\u0c2e\u0c3e\u0c1f\u0c3e \u0c2a\u0c1a\u0c4d\u0c1a\u0c21\u0c3f",
     "subtitle": "Telangana Tomato Pickle",
     "description": "Ripe tomatoes slow-cooked with spices until thick and glossy.",
     "category": "veg",
@@ -73,7 +73,7 @@
     "available": true,
     "featured": true,
     "displayOrder": 3,
-    "imagePath": "",
+    "imagePath": "/products/tomato-pickle.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -92,7 +92,7 @@
     "id": "nimmakaya-pickle",
     "slug": "nimmakaya-pickle",
     "name": "Nimmakaya Pickle",
-    "nameTelugu": "నిమ్మకాయ పచ్చడి",
+    "nameTelugu": "\u0c28\u0c3f\u0c2e\u0c4d\u0c2e\u0c15\u0c3e\u0c2f \u0c2a\u0c1a\u0c4d\u0c1a\u0c21\u0c3f",
     "subtitle": "Lemon Pickle",
     "description": "Sun-dried lemons with chilli, fenugreek, and sesame oil.",
     "category": "veg",
@@ -101,7 +101,7 @@
     "available": true,
     "featured": false,
     "displayOrder": 4,
-    "imagePath": "",
+    "imagePath": "/products/nimmakaya-pickle.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -145,7 +145,7 @@
     "available": true,
     "featured": false,
     "displayOrder": 6,
-    "imagePath": "",
+    "imagePath": "/products/usirikaya-pickle.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -181,7 +181,7 @@
     "id": "velluli-pickle",
     "slug": "velluli-pickle",
     "name": "Garlic Pickle",
-    "nameTelugu": "వెల్లులి పచ్చడి",
+    "nameTelugu": "\u0c35\u0c46\u0c32\u0c4d\u0c32\u0c41\u0c32\u0c3f \u0c2a\u0c1a\u0c4d\u0c1a\u0c21\u0c3f",
     "subtitle": "Velluli Pickle",
     "description": "Peeled garlic cloves in red chilli and sesame oil masala.",
     "category": "veg",
@@ -212,7 +212,7 @@
     "available": true,
     "featured": false,
     "displayOrder": 9,
-    "imagePath": "",
+    "imagePath": "/products/kakarakaya-pickle.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -248,7 +248,7 @@
     "id": "allam-pickle",
     "slug": "allam-pickle",
     "name": "Ginger Pickle",
-    "nameTelugu": "అల్లం పచ్చడి",
+    "nameTelugu": "\u0c05\u0c32\u0c4d\u0c32\u0c02 \u0c2a\u0c1a\u0c4d\u0c1a\u0c21\u0c3f",
     "subtitle": "Allam Pickle",
     "description": "Young ginger julienne in tangy lemon-chilli masala.",
     "category": "veg",
@@ -272,7 +272,7 @@
     "slug": "peanut-pickle",
     "name": "Peanut Pickle",
     "subtitle": "Groundnut Pickle",
-    "description": "Roasted peanuts in spiced oil — crunchy and addictive.",
+    "description": "Roasted peanuts in spiced oil \u2014 crunchy and addictive.",
     "category": "veg",
     "spiceLevel": 2,
     "tag": null,
@@ -293,7 +293,7 @@
     "id": "royyala-pickle",
     "slug": "royyala-pickle",
     "name": "Royyala Pickle",
-    "nameTelugu": "రొయ్యల పచ్చడి",
+    "nameTelugu": "\u0c30\u0c4a\u0c2f\u0c4d\u0c2f\u0c32 \u0c2a\u0c1a\u0c4d\u0c1a\u0c21\u0c3f",
     "subtitle": "Prawn Pickle",
     "description": "Fresh prawns in fiery Telangana masala and sesame oil.",
     "category": "non-veg",
@@ -329,7 +329,7 @@
     "available": true,
     "featured": true,
     "displayOrder": 14,
-    "imagePath": "",
+    "imagePath": "/products/naatu-kodi-pickle.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -356,7 +356,7 @@
     "available": true,
     "featured": true,
     "displayOrder": 15,
-    "imagePath": "",
+    "imagePath": "/products/chepala-pickle.jpeg",
     "weightOptions": [
       {
         "id": "250g",
@@ -393,7 +393,7 @@
     "slug": "chicken-liver-pickle",
     "name": "Chicken Liver Pickle",
     "subtitle": "Kodi Kaleja Pickle",
-    "description": "Chicken liver in spiced oil — rich and deeply flavoured.",
+    "description": "Chicken liver in spiced oil \u2014 rich and deeply flavoured.",
     "category": "non-veg",
     "spiceLevel": 4,
     "tag": null,

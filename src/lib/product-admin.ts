@@ -1,4 +1,5 @@
 import { PickleProduct, ProductCategory, WeightOption } from "@/types/product";
+import { getDefaultImageForSlug } from "@/lib/product-images";
 
 export function slugify(text: string): string {
   return text
@@ -72,7 +73,7 @@ export function normalizeProduct(raw: PickleProduct): PickleProduct {
     available: raw.available,
     featured: raw.featured,
     displayOrder: Number(raw.displayOrder) || 0,
-    imagePath: "",
+    imagePath: raw.imagePath?.trim() || getDefaultImageForSlug(slug),
     weightOptions,
     updatedAt: new Date().toISOString(),
   };

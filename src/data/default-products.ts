@@ -15,7 +15,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: true,
     displayOrder: 1,
-    imagePath: "",
+    imagePath: "/products/avakaya.jpeg",
     weightOptions: [
       { id: "250g", label: "250g", priceINR: 180 },
       { id: "500g", label: "500g", priceINR: 320 },
@@ -54,7 +54,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: true,
     displayOrder: 3,
-    imagePath: "",
+    imagePath: "/products/tomato-pickle.jpeg",
     weightOptions: [
       { id: "250g", label: "250g", priceINR: 140 },
       { id: "500g", label: "500g", priceINR: 260 },
@@ -73,7 +73,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: false,
     displayOrder: 4,
-    imagePath: "",
+    imagePath: "/products/nimmakaya-pickle.jpeg",
     weightOptions: [{ id: "250g", label: "250g", priceINR: 150 }],
   },
   {
@@ -103,7 +103,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: false,
     displayOrder: 6,
-    imagePath: "",
+    imagePath: "/products/usirikaya-pickle.jpeg",
     weightOptions: [{ id: "250g", label: "250g", priceINR: 155 }],
   },
   {
@@ -149,7 +149,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: false,
     displayOrder: 9,
-    imagePath: "",
+    imagePath: "/products/kakarakaya-pickle.jpeg",
     weightOptions: [{ id: "250g", label: "250g", priceINR: 150 }],
   },
   {
@@ -229,7 +229,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: true,
     displayOrder: 14,
-    imagePath: "",
+    imagePath: "/products/naatu-kodi-pickle.jpeg",
     weightOptions: [
       { id: "250g", label: "250g", priceINR: 280 },
       { id: "500g", label: "500g", priceINR: 520 },
@@ -247,7 +247,7 @@ export const defaultProducts: PickleProduct[] = [
     available: true,
     featured: true,
     displayOrder: 15,
-    imagePath: "",
+    imagePath: "/products/chepala-pickle.jpeg",
     weightOptions: [{ id: "250g", label: "250g", priceINR: 300 }],
   },
   {

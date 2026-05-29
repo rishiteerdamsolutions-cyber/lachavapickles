@@ -3,6 +3,7 @@ import path from "path";
 import { getDb } from "@/lib/mongodb";
 import { defaultProducts } from "@/data/default-products";
 import { PickleProduct } from "@/types/product";
+import { applyDefaultImages } from "@/lib/product-images";
 
 const COLLECTION = "products";
 const FILE_STORE = path.join(process.cwd(), "data", "products-store.json");
@@ -33,6 +34,11 @@ async function seedIfEmpty(products: PickleProduct[]): Promise<PickleProduct[]> 
   return seeded;
 }
 
+function finalizeProducts(products: PickleProduct[]): PickleProduct[] {
+  memoryCache = applyDefaultImages(products);
+  return memoryCache;
+}
+
 export async function getAllProducts(): Promise<PickleProduct[]> {
   if (memoryCache?.length) return memoryCache;
 
@@ -49,8 +55,7 @@ export async function getAllProducts(): Promise<PickleProduct[]> {
         await col.insertMany(seeded);
         products = seeded;
       }
-      memoryCache = products;
-      return products;
+      return finalizeProducts(products);
     } catch (err) {
       console.error("MongoDB products fetch failed, using file store:", err);
     }
@@ -65,8 +70,7 @@ export async function getAllProducts(): Promise<PickleProduct[]> {
     if (stored.length === 0) await writeFileStore(products);
     else products = stored;
   }
-  memoryCache = products;
-  return products;
+  return finalizeProducts(products);
 }
 
 async function fileExists(): Promise<boolean> {

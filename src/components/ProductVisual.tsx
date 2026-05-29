@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { PickleProduct, ProductCategory } from "@/types/product";
+import { resolveProductImage } from "@/lib/product-images";
 import { cn } from "@/lib/cn";
 
 const PALETTES: Record<
@@ -26,8 +28,39 @@ interface Props {
 }
 
 export default function ProductVisual({ product, className, compact }: Props) {
+  const src = resolveProductImage(product);
   const p = PALETTES[product.category];
   const initial = product.name.charAt(0).toUpperCase();
+
+  if (src) {
+    return (
+      <div
+        className={cn(
+          "relative overflow-hidden bg-surface",
+          compact ? "min-h-[120px]" : "min-h-[200px] aspect-square",
+          className
+        )}
+      >
+        <Image
+          src={src}
+          alt={product.name}
+          fill
+          className="object-cover"
+          sizes={compact ? "120px" : "(max-width: 640px) 50vw, 320px"}
+        />
+        {product.nameTelugu && (
+          <p
+            className={cn(
+              "absolute bottom-0 inset-x-0 bg-gradient-to-t from-ink/80 to-transparent px-2 py-2 text-xs font-medium text-white text-center",
+              compact && "text-[10px] py-1"
+            )}
+          >
+            {product.nameTelugu}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
