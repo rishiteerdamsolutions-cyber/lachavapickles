@@ -1,5 +1,7 @@
 import { Order } from "./orders-db";
 
+export const DTDC_CONTACT_NAME = "Kodipelli Shravan";
+
 export function getDtdcWhatsAppNumber(): string {
   return (
     process.env.NEXT_PUBLIC_DTDC_WHATSAPP_NUMBER ||
@@ -11,19 +13,27 @@ export function getDtdcWhatsAppNumber(): string {
 export function buildDtdcMessage(order: Order): string {
   const lines = [
     "DTDC Shipment Request — Lachava Pickles",
+    `Attn: ${DTDC_CONTACT_NAME}`,
     "",
-    `Order: ${order.displayOrderId}`,
+    `Order ID: ${order.displayOrderId}`,
     `Customer: ${order.customer.name}`,
     `Phone: ${order.customer.phone}`,
-    `Address: ${order.customer.address}, ${order.customer.city}, ${order.customer.state} ${order.customer.zip}`,
+    `Email: ${order.customer.email || "—"}`,
     "",
-    "Items:",
+    "Delivery address:",
+    order.customer.address,
+    `${order.customer.city}, ${order.customer.state} ${order.customer.zip}`,
+    order.customer.country || "India",
+    "",
+    "Order items:",
     ...order.items.map(
-      (i) => `- ${i.productName} (${i.variantLabel}) × ${i.quantity}`
+      (i) =>
+        `• ${i.productName} (${i.variantLabel}) × ${i.quantity} — ₹${i.priceINR * i.quantity}`
     ),
     "",
-    `Total: ₹${order.amountINR}`,
-  ];
+    `Order total: ₹${order.amountINR}`,
+    order.paymentId ? `Payment ref: ${order.paymentId}` : "",
+  ].filter(Boolean);
   return lines.join("\n");
 }
 

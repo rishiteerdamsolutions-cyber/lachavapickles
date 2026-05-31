@@ -4,13 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useOrder } from "@/context/OrderContext";
-import { useLanguage } from "@/context/LanguageContext";
-
-function isClientDemoPayments(): boolean {
-  if (process.env.NEXT_PUBLIC_DEMO_PAYMENTS === "false") return false;
-  if (process.env.NEXT_PUBLIC_DEMO_PAYMENTS === "true") return true;
-  return !process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID?.trim();
-}
 
 declare global {
   interface Window {
@@ -48,47 +41,12 @@ function loadRazorpay(): Promise<boolean> {
   });
 }
 
-type CreateOrderResponse = {
-  demo?: boolean;
-  orderId: string;
-  displayOrderId: string;
-  paymentId?: string;
-  amountINR?: number;
-  paymentStatus?: string;
-  items?: { productName: string; variantLabel: string; quantity: number }[];
-  amount?: number;
-  currency?: string;
-  key?: string;
-  error?: string;
-};
-
 export default function RazorpayCheckout({ customer, disabled }: Props) {
   const { items, totalINR, clearCart } = useCart();
   const { setLastOrder } = useOrder();
-  const { t } = useLanguage();
-  const demo = isClientDemoPayments();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const finishOrder = (data: CreateOrderResponse) => {
-    const success = {
-      orderId: data.orderId,
-      displayOrderId: data.displayOrderId,
-      paymentId: data.paymentId || `demo_${data.orderId}`,
-      amountINR: data.amountINR ?? totalINR,
-      items: data.items ?? items.map((i) => ({
-        productName: i.productName,
-        variantLabel: i.variantLabel,
-        quantity: i.quantity,
-      })),
-      paymentStatus: data.paymentStatus || "paid",
-    };
-    setLastOrder(success);
-    sessionStorage.setItem("orderSuccess", JSON.stringify(success));
-    clearCart();
-    router.push("/checkout/success");
-  };
 
   const handlePay = async () => {
     if (disabled || items.length === 0) return;
@@ -110,13 +68,8 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
           customer,
         }),
       });
-      const order: CreateOrderResponse = await res.json();
+      const order = await res.json();
       if (!res.ok) throw new Error(order.error || "Could not create order");
-
-      if (order.demo) {
-        finishOrder(order);
-        return;
-      }
 
       const loaded = await loadRazorpay();
       if (!loaded) throw new Error("Payment gateway failed to load");
@@ -125,8 +78,8 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
         key: order.key,
         amount: order.amount,
         currency: order.currency,
-        name: "Lachava Telangana Pickles",
-        description: "Authentic Telangana Pickles",
+        name: "Lachava Telangana Vantalu",
+        description: `Order ${order.displayOrderId}`,
         order_id: order.orderId,
         prefill: {
           name: customer.name,
@@ -152,9 +105,29 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
             setError(data.error || "Payment verification failed");
             return;
           }
-          finishOrder(data);
+          setLastOrder({
+            orderId: data.orderId,
+            displayOrderId: data.displayOrderId,
+            paymentId: data.paymentId,
+            amountINR: data.amountINR,
+            items: data.items,
+            paymentStatus: data.paymentStatus || "paid",
+          });
+          sessionStorage.setItem(
+            "orderSuccess",
+            JSON.stringify({
+              orderId: data.orderId,
+              displayOrderId: data.displayOrderId,
+              paymentId: data.paymentId,
+              amountINR: data.amountINR,
+              items: data.items,
+              paymentStatus: data.paymentStatus || "paid",
+            })
+          );
+          clearCart();
+          router.push("/checkout/success");
         },
-        theme: { color: "#e85d2c" },
+        theme: { color: "#5c3317" },
       });
       rzp.open();
     } catch (e) {
@@ -171,17 +144,10 @@ export default function RazorpayCheckout({ customer, disabled }: Props) {
         type="button"
         onClick={handlePay}
         disabled={disabled || loading || items.length === 0}
-        className="w-full min-h-[48px] rounded-full bg-accent px-6 font-semibold text-white hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full min-h-[48px] rounded-full bg-brand px-6 text-sm font-bold uppercase tracking-wide text-white hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {loading
-          ? "Processing…"
-          : demo
-            ? t("checkout.placeOrder")
-            : t("checkout.placeOrder")}
+        {loading ? "Processing…" : "Pay with Razorpay"}
       </button>
-      <p className="mt-2 text-center text-xs text-muted">
-        {demo ? t("checkout.demoNote") : t("checkout.liveNote")}
-      </p>
     </div>
   );
 }

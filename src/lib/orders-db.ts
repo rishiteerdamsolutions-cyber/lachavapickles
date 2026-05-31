@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { getDb } from "./mongodb";
+import { nextDailySequenceFromFile } from "./order-counter-file";
 
 export interface OrderCustomer {
   name: string;
@@ -31,11 +32,14 @@ export interface Order {
   items: OrderItem[];
   customer: OrderCustomer;
   createdAt: Date | string;
+  paymentConfirmedAt?: Date | string;
   dtdcSentAt?: Date | string;
+  customerDispatchNotifiedAt?: Date | string;
   adminNotes?: string;
 }
 
 const COLLECTION = "orders";
+const COUNTERS = "order_counters";
 const FILE_STORE = path.join(process.cwd(), "data", "orders-store.json");
 
 let memoryOrders: Order[] | null = null;
@@ -95,6 +99,32 @@ async function persistOrders(orders: Order[]): Promise<void> {
   await writeFileOrders(orders);
 }
 
+export async function getNextDailyOrderSequence(dateKey: string): Promise<number> {
+  if (process.env.MONGODB_URI) {
+    try {
+      const db = await getDb();
+      const result = await db.collection(COUNTERS).findOneAndUpdate(
+        { dateKey },
+        { $inc: { seq: 1 } },
+        { upsert: true, returnDocument: "after" }
+      );
+      if (result && typeof result.seq === "number") return result.seq;
+    } catch (err) {
+      console.error("MongoDB order counter failed, using file store:", err);
+    }
+  }
+  return nextDailySequenceFromFile(dateKey);
+}
+
+export async function getOrderById(orderId: string): Promise<Order | null> {
+  const orders = await getOrders();
+  return orders.find((o) => o.orderId === orderId) ?? null;
+}
+
+export async function getOrderByRazorpayId(orderId: string): Promise<Order | null> {
+  return getOrderById(orderId);
+}
+
 export async function saveOrderToDb(
   orderId: string,
   displayOrderId: string,
@@ -132,6 +162,7 @@ export async function createPaidOrder(
     items,
     customer,
     createdAt: new Date().toISOString(),
+    paymentConfirmedAt: new Date().toISOString(),
   };
   const orders = await getOrders();
   orders.unshift(order);
@@ -139,19 +170,36 @@ export async function createPaidOrder(
   return order;
 }
 
-export async function markOrderPaid(
-  orderId: string,
-  paymentId: string
-): Promise<void> {
+export async function markOrderPaid(orderId: string, paymentId?: string): Promise<void> {
   const orders = await getOrders();
   const idx = orders.findIndex((o) => o.orderId === orderId);
   if (idx >= 0) {
     orders[idx] = {
       ...orders[idx],
       paymentStatus: "paid",
-      paymentId,
+      paymentId: paymentId || "manual",
+      paymentConfirmedAt: new Date().toISOString(),
     };
     await persistOrders(orders);
+    return;
+  }
+
+  if (process.env.MONGODB_URI) {
+    try {
+      const db = await getDb();
+      await db.collection(COLLECTION).updateOne(
+        { orderId },
+        {
+          $set: {
+            paymentStatus: "paid",
+            paymentId: paymentId || "manual",
+            paymentConfirmedAt: new Date(),
+          },
+        }
+      );
+    } catch (err) {
+      console.error("markOrderPaid MongoDB:", err);
+    }
   }
 }
 
@@ -165,6 +213,36 @@ export async function markDtdcSent(orderId: string): Promise<void> {
   if (idx >= 0) {
     orders[idx] = { ...orders[idx], dtdcSentAt: new Date().toISOString() };
     await persistOrders(orders);
+    return;
+  }
+
+  if (process.env.MONGODB_URI) {
+    const db = await getDb();
+    await db.collection(COLLECTION).updateOne(
+      { orderId },
+      { $set: { dtdcSentAt: new Date() } }
+    );
+  }
+}
+
+export async function markCustomerDispatchNotified(orderId: string): Promise<void> {
+  const orders = await getOrders();
+  const idx = orders.findIndex((o) => o.orderId === orderId);
+  if (idx >= 0) {
+    orders[idx] = {
+      ...orders[idx],
+      customerDispatchNotifiedAt: new Date().toISOString(),
+    };
+    await persistOrders(orders);
+    return;
+  }
+
+  if (process.env.MONGODB_URI) {
+    const db = await getDb();
+    await db.collection(COLLECTION).updateOne(
+      { orderId },
+      { $set: { customerDispatchNotifiedAt: new Date() } }
+    );
   }
 }
 

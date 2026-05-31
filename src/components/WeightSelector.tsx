@@ -18,29 +18,30 @@ export default function WeightSelector({
 }: Props) {
   return (
     <div>
-      <p className="text-sm font-semibold text-ink mb-3">Select size</p>
-      <div className="flex flex-wrap gap-2">
+      <p className="mb-3 text-xs font-bold uppercase tracking-wide text-brand">Select size</p>
+      <div className="flex flex-col gap-2">
         {options.map((opt) => {
           const active = selected === opt.id;
           return (
             <button
               key={opt.id}
               type="button"
+              data-agent-weight={opt.id}
               disabled={disabled}
               onClick={() => onSelect(opt.id)}
               className={cn(
-                "min-h-[44px] rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors",
+                "flex min-h-[48px] items-center justify-between rounded-full border px-5 py-3 text-sm font-medium transition-colors",
                 active
-                  ? "border-accent bg-accent-soft text-accent"
-                  : "border-border bg-surface-elevated text-ink hover:border-accent/40",
-                disabled && "opacity-50 cursor-not-allowed"
+                  ? "border-brand bg-brand text-white"
+                  : "border-border bg-white text-brand hover:border-brand/40",
+                disabled && "cursor-not-allowed opacity-50"
               )}
             >
               <span>{opt.label}</span>
-              <span className="ml-2 text-muted">
+              <span className={cn(active ? "text-white/90" : "text-muted")}>
                 {formatPrice(opt.priceINR)}
                 {opt.originalPriceINR && opt.originalPriceINR > opt.priceINR && (
-                  <span className="ml-1 line-through text-xs">
+                  <span className="ml-1 line-through text-xs opacity-70">
                     {formatPrice(opt.originalPriceINR)}
                   </span>
                 )}

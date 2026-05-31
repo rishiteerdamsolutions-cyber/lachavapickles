@@ -7,8 +7,10 @@ import { PickleProduct, spiceDisplay } from "@/types/product";
 import WeightSelector from "@/components/WeightSelector";
 import ProductTagBadge, { StockBadge } from "@/components/ProductTagBadge";
 import ProductVisual from "@/components/ProductVisual";
+import WishlistHeartButton from "@/components/WishlistHeartButton";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
+import { formatINRDecimal } from "@/lib/format-price";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -21,8 +23,15 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    fetch(`/api/products?slug=${slug}`)
-      .then((r) => r.json())
+    if (!slug || slug.includes("[")) {
+      setLoading(false);
+      return;
+    }
+    fetch(`/api/products?slug=${encodeURIComponent(slug)}`)
+      .then((r) => {
+        if (!r.ok) return null;
+        return r.json();
+      })
       .then((data) => {
         if (data && !data.error) {
           setProduct(data);
@@ -42,8 +51,8 @@ export default function ProductDetailPage() {
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 text-center">
         <p className="text-muted">Product not found</p>
-        <Link href="/veg-pickles" className="mt-4 inline-block text-accent font-semibold">
-          Browse pickles
+        <Link href="/products" className="mt-4 inline-block font-semibold text-brand hover:underline">
+          Browse shop
         </Link>
       </div>
     );
@@ -52,6 +61,9 @@ export default function ProductDetailPage() {
   const selected = product.weightOptions.find((w) => w.id === selectedVariant)!;
   const outOfStock = !product.available || product.tag === "out_of_stock";
   const backHref = product.category === "veg" ? "/veg-pickles" : "/non-veg-pickles";
+  const prices = product.weightOptions.map((w) => w.priceINR);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
 
   const handleAddToCart = () => {
     if (outOfStock || !selected) return;
@@ -68,70 +80,73 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14 pb-[max(2rem,calc(2rem+env(safe-area-inset-bottom)))]">
-      <Link href={backHref} className="text-sm text-muted hover:text-accent mb-8 inline-block">
-        ← Back to {product.category === "veg" ? "veg" : "non-veg"} pickles
+    <div className="app-content py-[clamp(1rem,4vw,2.5rem)]">
+      <Link href={backHref} className="mb-4 inline-block text-xs font-semibold uppercase tracking-wide text-muted hover:text-brand">
+        ← Back to shop
       </Link>
 
-      <div className="grid md:grid-cols-2 gap-10 lg:gap-14">
-        <ProductVisual product={product} className="rounded-2xl" />
+      <div className="relative">
+        <ProductVisual product={product} />
+        <WishlistHeartButton itemId={product.id} />
+      </div>
 
-        <div>
-          <div className="flex flex-wrap gap-2 mb-3">
-            <ProductTagBadge tag={product.tag} />
-            <StockBadge available={product.available} tag={product.tag} />
-          </div>
-          {product.nameTelugu && (
-            <p className="text-sm font-medium text-forest">{product.nameTelugu}</p>
-          )}
-          <h1 className="font-display text-3xl sm:text-4xl text-ink mt-1">{product.name}</h1>
-          <p className="text-muted mt-1">{product.subtitle}</p>
-          <p className="mt-3 text-sm text-muted">{spiceDisplay(product.spiceLevel)} spice</p>
-          <p className="mt-6 text-ink-muted leading-relaxed">{product.description}</p>
+      <div className="mt-4 px-1">
+        <div className="flex flex-wrap gap-2 mb-2">
+          <ProductTagBadge tag={product.tag} />
+          <StockBadge available={product.available} tag={product.tag} />
+        </div>
+        {product.nameTelugu && (
+          <p className="text-sm font-semibold text-brand">{product.nameTelugu}</p>
+        )}
+        <h1 className="mt-1 text-xl font-bold text-brand">{product.name}</h1>
+        <p className="text-sm text-muted">{product.subtitle}</p>
+        <p className="mt-2 text-sm font-bold text-brand">
+          {formatINRDecimal(minPrice)}
+          {minPrice !== maxPrice && ` – ${formatINRDecimal(maxPrice)}`}
+        </p>
+        <p className="mt-2 text-xs text-muted">{spiceDisplay(product.spiceLevel)} spice</p>
+        <p className="mt-4 text-sm text-ink-muted leading-relaxed">{product.description}</p>
 
-          <div className="mt-10">
-            <WeightSelector
-              options={product.weightOptions}
-              selected={selectedVariant}
-              onSelect={setSelectedVariant}
-              formatPrice={format}
-              disabled={outOfStock}
-            />
-          </div>
+        <div className="mt-8">
+          <WeightSelector
+            options={product.weightOptions}
+            selected={selectedVariant}
+            onSelect={setSelectedVariant}
+            formatPrice={format}
+            disabled={outOfStock}
+          />
+        </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <div className="flex items-center rounded-xl border border-border self-start">
-              <button
-                type="button"
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="min-w-[44px] min-h-[44px] px-4 hover:bg-surface transition-colors"
-              >
-                −
-              </button>
-              <span className="px-4 font-medium min-w-[2rem] text-center">{quantity}</span>
-              <button
-                type="button"
-                onClick={() => setQuantity((q) => q + 1)}
-                className="min-w-[44px] min-h-[44px] px-4 hover:bg-surface transition-colors"
-              >
-                +
-              </button>
-            </div>
+        <div className="mt-6 flex flex-col gap-3">
+          <div className="flex items-center self-start rounded-full border border-border bg-white">
             <button
               type="button"
-              onClick={handleAddToCart}
-              disabled={outOfStock}
-              className="min-h-[48px] flex-1 rounded-full bg-accent px-6 font-semibold text-white hover:bg-accent-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              className="min-h-[44px] min-w-[44px] px-4 hover:bg-surface transition-colors"
             >
-              {outOfStock
-                ? "Out of stock"
-                : `Add to cart — ${format(selected.priceINR * quantity)}`}
+              −
+            </button>
+            <span className="min-w-[2rem] px-4 text-center font-medium">{quantity}</span>
+            <button
+              type="button"
+              onClick={() => setQuantity((q) => q + 1)}
+              className="min-h-[44px] min-w-[44px] px-4 hover:bg-surface transition-colors"
+            >
+              +
             </button>
           </div>
-          <p className="mt-4 text-xs text-muted">
-            Shipping extra by weight & location. Non-veg: refrigerate after opening.
-          </p>
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={outOfStock}
+            className="shop-select-btn disabled:opacity-50"
+          >
+            {outOfStock ? "OUT OF STOCK" : `ADD TO CART — ${format(selected.priceINR * quantity)}`}
+          </button>
         </div>
+        <p className="mt-4 text-xs text-muted">
+          Shipping extra by weight & location. Non-veg: refrigerate after opening.
+        </p>
       </div>
     </div>
   );

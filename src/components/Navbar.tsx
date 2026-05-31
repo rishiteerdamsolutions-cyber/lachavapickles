@@ -2,97 +2,102 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, Search } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { useLanguage } from "@/context/LanguageContext";
 import BrandLogo from "@/components/BrandLogo";
-import LanguageToggle from "@/components/LanguageToggle";
+import ShopSearchOverlay from "@/components/ShopSearchOverlay";
 
 const links = [
-  { href: "/veg-pickles", key: "nav.veg" },
-  { href: "/non-veg-pickles", key: "nav.nonveg" },
-  { href: "/combos", key: "nav.combos" },
-  { href: "/story", key: "nav.story" },
-  { href: "/contact", key: "nav.contact" },
-] as const;
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Shop All" },
+  { href: "/veg-pickles", label: "Veg Pickles" },
+  { href: "/non-veg-pickles", label: "Non-Veg Pickles" },
+  { href: "/combos", label: "Combos" },
+  { href: "/story", label: "Our Story" },
+  { href: "/contact", label: "Contact" },
+];
 
 export default function Navbar() {
   const { itemCount } = useCart();
-  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-surface-elevated/90 backdrop-blur-lg pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <BrandLogo size="md" />
+    <header className="sticky top-0 z-50 bg-brand pt-[env(safe-area-inset-top)] text-white">
+      <div
+        className="relative mx-auto flex items-center justify-between px-[var(--content-pad-x)]"
+        style={{ height: "var(--header-h)", maxWidth: "var(--content-max)" }}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="flex min-h-[44px] min-w-[4.5rem] items-center gap-2 pl-1 text-white"
+          aria-label="Menu"
+        >
+          {open ? (
+            <X className="h-[clamp(1.25rem,4vw,1.375rem)] w-[clamp(1.25rem,4vw,1.375rem)]" strokeWidth={2} />
+          ) : (
+            <Menu className="h-[clamp(1.25rem,4vw,1.375rem)] w-[clamp(1.25rem,4vw,1.375rem)]" strokeWidth={2} />
+          )}
+          <span className="text-[clamp(0.625rem,2.4vw,0.75rem)] font-bold uppercase tracking-[0.12em]">
+            MENU
+          </span>
+        </button>
 
-        <nav className="hidden lg:flex items-center gap-1">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="rounded-full px-4 py-2 text-sm font-medium text-muted hover:text-ink hover:bg-surface transition-colors"
-            >
-              {t(l.key)}
-            </Link>
-          ))}
-        </nav>
+        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="pointer-events-auto">
+            <BrandLogo size="md" variant="header" />
+          </div>
+        </div>
 
-        <div className="flex items-center gap-1">
-          <LanguageToggle className="hidden sm:inline-flex" />
-          <Link
-            href="/veg-pickles"
-            className="hidden sm:inline-flex rounded-full bg-ink px-4 py-2 text-sm font-semibold text-surface hover:bg-ink-muted transition-colors"
-          >
-            {t("nav.shop")}
-          </Link>
-          <Link
-            href="/cart"
-            className="relative flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface transition-colors"
-            aria-label={t("nav.cart")}
-          >
-            <ShoppingBag className="h-5 w-5 text-ink" strokeWidth={1.75} />
-            {itemCount > 0 && (
-              <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-white">
-                {itemCount}
-              </span>
-            )}
-          </Link>
+        <div className="flex min-w-[4.5rem] items-center justify-end">
           <button
             type="button"
-            onClick={() => setOpen(!open)}
-            className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface"
-            aria-label="Menu"
+            onClick={() => {
+              setOpen(false);
+              setSearchOpen(true);
+            }}
+            className="flex h-10 w-10 items-center justify-center text-white sm:h-11 sm:w-11"
+            aria-label="Search shop"
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <Search className="h-[clamp(1.25rem,4vw,1.375rem)] w-[clamp(1.25rem,4vw,1.375rem)]" strokeWidth={2} />
           </button>
+          <Link
+            href="/cart"
+            className="relative flex h-10 w-10 items-center justify-center text-white sm:h-11 sm:w-11"
+            aria-label="Cart"
+          >
+            <ShoppingBag className="h-[clamp(1.25rem,4vw,1.375rem)] w-[clamp(1.25rem,4vw,1.375rem)]" strokeWidth={2} />
+            <span className="absolute right-0.5 top-0.5 flex h-[clamp(1rem,3.2vw,1.125rem)] min-w-[clamp(1rem,3.2vw,1.125rem)] items-center justify-center rounded-full bg-white px-0.5 text-[clamp(0.5625rem,2vw,0.625rem)] font-bold leading-none text-brand">
+              {itemCount}
+            </span>
+          </Link>
         </div>
       </div>
 
       {open && (
-        <nav className="lg:hidden border-t border-border px-4 py-4 space-y-1 bg-surface-elevated">
-          <div className="px-3 pb-2">
-            <LanguageToggle />
-          </div>
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="block rounded-lg px-3 py-3 text-base font-medium text-ink hover:bg-surface"
-            >
-              {t(l.key)}
-            </Link>
-          ))}
-          <Link
-            href="/veg-pickles"
-            onClick={() => setOpen(false)}
-            className="block rounded-lg bg-accent px-3 py-3 text-center font-semibold text-white mt-2"
+        <nav className="border-t border-white/15 bg-brand-dark">
+          <div
+            className="mx-auto px-[var(--content-pad-x)] py-3"
+            style={{ maxWidth: "var(--content-max)" }}
           >
-            {t("nav.shopPickles")}
-          </Link>
+            <div className="space-y-0.5">
+              {links.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  className="block rounded-lg px-3 py-2.5 text-sm font-medium text-white/90 hover:bg-white/10"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
       )}
+
+      <ShopSearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

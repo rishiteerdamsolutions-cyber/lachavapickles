@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { getOrder, deleteOrder } from "@/lib/order-store";
-import { markOrderPaid } from "@/lib/orders-db";
+import { getOrderByRazorpayId, markOrderPaid } from "@/lib/orders-db";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +16,10 @@ export async function POST(req: NextRequest) {
     }
 
     const secret = process.env.RAZORPAY_KEY_SECRET!;
+    if (!secret) {
+      return NextResponse.json({ error: "Payment not configured" }, { status: 503 });
+    }
+
     const expected = crypto
       .createHmac("sha256", secret)
       .update(`${orderId}|${paymentId}`)
@@ -27,8 +31,21 @@ export async function POST(req: NextRequest) {
 
     await markOrderPaid(orderId, paymentId);
 
-    const orderData = getOrder(orderId);
-    if (orderData) deleteOrder(orderId);
+    let orderData = getOrder(orderId);
+    if (!orderData) {
+      const dbOrder = await getOrderByRazorpayId(orderId);
+      if (dbOrder) {
+        orderData = {
+          orderId: dbOrder.orderId,
+          displayOrderId: dbOrder.displayOrderId,
+          amountINR: dbOrder.amountINR,
+          items: dbOrder.items,
+          customer: dbOrder.customer,
+        };
+      }
+    } else {
+      deleteOrder(orderId);
+    }
 
     return NextResponse.json({
       orderId,

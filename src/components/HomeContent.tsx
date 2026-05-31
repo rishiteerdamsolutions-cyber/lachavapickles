@@ -134,7 +134,7 @@ export default function HomeContent({ featured, combos, settings }: Props) {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.map((p) => (
-              <PickleProductCard key={p.id} product={p} formatPrice={format} />
+              <PickleProductCard key={p.id} product={p} />
             ))}
           </div>
         </div>

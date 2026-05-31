@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Plus_Jakarta_Sans, Noto_Sans_Telugu } from "next/font/google";
+import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
+import AppChrome from "@/components/AppChrome";
 import { BRAND } from "@/data/brand";
 
 const instrument = Instrument_Serif({
@@ -18,18 +16,12 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
-const telugu = Noto_Sans_Telugu({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["telugu"],
-  variable: "--font-telugu",
-});
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
-  themeColor: "#141110",
+  themeColor: "#4a2c1a",
 };
 
 export const metadata: Metadata = {
@@ -37,23 +29,18 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://lachava.vercel.app"
   ),
   title: {
-    default: "Lachava | Telangana Pickles",
+    default: "Lachava | Telangana Vantalu",
     template: "%s | Lachava",
   },
   description:
-    "Handcrafted Telangana pickles — Avakaya, Gongura, prawn, chicken & more. No preservatives. Ships pan India.",
+    "లచ్చవ్వ తెలంగాణ వంటల — Mamidikaya, Chinthankaya, prawn, chicken pickles & more. Homemade Telangana taste.",
   icons: {
-    icon: [
-      { url: BRAND.favicon, sizes: "any" },
-      { url: BRAND.faviconPng, type: "image/png", sizes: "512x512" },
-    ],
-    apple: BRAND.faviconPng,
+    icon: BRAND.favicon,
   },
   openGraph: {
-    title: "Lachava Telangana Pickles",
-    description: "Ammamma Cheyyi Ruchi — Handcrafted in Nizamabad",
+    title: "Lachava Telangana Vantalu",
+    description: "Ammamma Cheyyi Ruchi — Handcrafted pickles",
     type: "website",
-    images: [{ url: BRAND.logo, width: 1200, height: 630, alt: "Lachava Telangana Pickles" }],
   },
 };
 
@@ -63,13 +50,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${instrument.variable} ${jakarta.variable} ${telugu.variable}`}>
-      <body className="antialiased bg-surface text-ink min-h-screen flex flex-col">
+    <html lang="en" className={`${instrument.variable} ${jakarta.variable}`}>
+      <body className="antialiased bg-surface text-ink">
         <Providers>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <WhatsAppButton />
+          <div className="app-shell">
+            <AppChrome>{children}</AppChrome>
+          </div>
         </Providers>
       </body>
     </html>

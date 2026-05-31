@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing order details" }, { status: 400 });
     }
 
-    const displayOrderId = generateDisplayOrderId();
+    const displayOrderId = await generateDisplayOrderId();
     const orderItems = items.map(
       (i: {
         productName: string;

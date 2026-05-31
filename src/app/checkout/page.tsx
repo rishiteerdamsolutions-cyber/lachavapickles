@@ -34,9 +34,9 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-20 text-center">
+      <div className="app-content py-20 text-center">
         <p className="text-muted">Your cart is empty.</p>
-        <Link href="/veg-pickles" className="mt-4 inline-block text-accent font-semibold">
+        <Link href="/products" className="mt-4 inline-block font-semibold text-brand hover:underline">
           Continue shopping
         </Link>
       </div>
@@ -44,16 +44,17 @@ export default function CheckoutPage() {
   }
 
   const inputClass =
-    "mt-1 w-full rounded-lg border border-border bg-surface-elevated px-3 py-2.5 text-sm text-ink";
+    "mt-1 w-full rounded-xl border border-border bg-white px-3 py-2.5 text-sm text-ink focus:border-brand/50 focus:outline-none";
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:py-16">
-      <h1 className="font-display text-3xl text-ink">Checkout</h1>
+    <div className="app-content py-[clamp(1.5rem,5vw,3rem)]">
+      <h1 className="text-xl font-bold text-brand">Checkout</h1>
+      <p className="mt-1 text-sm text-muted">Secure payment via Razorpay (UPI, card, wallet)</p>
 
-      <div className="mt-10 grid lg:grid-cols-2 gap-10">
-        <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+      <div className="mt-8 space-y-8">
+        <form className="space-y-4 rounded-xl bg-white p-5 border border-border" onSubmit={(e) => e.preventDefault()}>
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Full name</span>
+            <span className="text-xs font-bold uppercase tracking-wide text-brand">Full name</span>
             <input
               required
               value={customer.name}
@@ -62,7 +63,7 @@ export default function CheckoutPage() {
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Phone</span>
+            <span className="text-xs font-bold uppercase tracking-wide text-brand">Phone</span>
             <input
               required
               type="tel"
@@ -72,7 +73,7 @@ export default function CheckoutPage() {
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Email</span>
+            <span className="text-xs font-bold uppercase tracking-wide text-brand">Email</span>
             <input
               type="email"
               value={customer.email}
@@ -81,7 +82,7 @@ export default function CheckoutPage() {
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Address</span>
+            <span className="text-xs font-bold uppercase tracking-wide text-brand">Address</span>
             <textarea
               required
               rows={2}
@@ -92,7 +93,7 @@ export default function CheckoutPage() {
           </label>
           <div className="grid sm:grid-cols-3 gap-4">
             <label className="block">
-              <span className="text-xs font-semibold text-muted uppercase">City</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-brand">City</span>
               <input
                 required
                 value={customer.city}
@@ -101,7 +102,7 @@ export default function CheckoutPage() {
               />
             </label>
             <label className="block">
-              <span className="text-xs font-semibold text-muted uppercase">State</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-brand">State</span>
               <input
                 required
                 value={customer.state}
@@ -110,7 +111,7 @@ export default function CheckoutPage() {
               />
             </label>
             <label className="block">
-              <span className="text-xs font-semibold text-muted uppercase">PIN</span>
+              <span className="text-xs font-bold uppercase tracking-wide text-brand">PIN</span>
               <input
                 required
                 value={customer.zip}
@@ -121,35 +122,28 @@ export default function CheckoutPage() {
           </div>
         </form>
 
-        <div>
-          <div className="rounded-xl border border-border bg-surface-elevated p-6">
-            <h2 className="font-semibold text-ink">Order summary</h2>
-            <ul className="mt-4 space-y-2 text-sm">
-              {items.map((item) => (
-                <li
-                  key={`${item.productId}-${item.variantId}`}
-                  className="flex justify-between text-muted"
-                >
-                  <span>
-                    {item.productName} ({item.variantLabel}) × {item.quantity}
-                  </span>
-                  <span>{format(item.priceINR * item.quantity)}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 pt-4 border-t border-border flex justify-between font-semibold text-ink">
-              <span>Total</span>
-              <span className="text-accent">{format(totalINR)}</span>
-            </div>
+        <div className="rounded-xl border border-border bg-white p-5">
+          <h2 className="font-semibold text-brand">Order summary</h2>
+          <ul className="mt-4 space-y-2 text-sm">
+            {items.map((item) => (
+              <li
+                key={`${item.productId}-${item.variantId}`}
+                className="flex justify-between text-muted"
+              >
+                <span>
+                  {item.productName} ({item.variantLabel}) × {item.quantity}
+                </span>
+                <span>{format(item.priceINR * item.quantity)}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 flex justify-between border-t border-border pt-4 font-bold text-brand">
+            <span>Total</span>
+            <span>{format(totalINR)}</span>
           </div>
-
-          <div className="mt-6">
-            <RazorpayCheckout customer={customer} disabled={!valid} />
-          </div>
-          <p className="mt-4 text-xs text-muted text-center">
-            Secure payment via Razorpay · Glass jars packed with care
-          </p>
         </div>
+
+        <RazorpayCheckout customer={customer} disabled={!valid} />
       </div>
     </div>
   );

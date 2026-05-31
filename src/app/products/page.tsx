@@ -1,5 +1,9 @@
-import { redirect } from "next/navigation";
+import ShopGrid from "@/components/ShopGrid";
+
+export const metadata = {
+  title: "Shop",
+};
 
 export default function ProductsPage() {
-  redirect("/veg-pickles");
+  return <ShopGrid showCombo showFilters />;
 }

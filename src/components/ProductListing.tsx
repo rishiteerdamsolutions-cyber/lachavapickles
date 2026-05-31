@@ -41,7 +41,7 @@ export default function ProductListing({ category, title, subtitle }: Props) {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p) => (
-            <PickleProductCard key={p.id} product={p} formatPrice={format} />
+            <PickleProductCard key={p.id} product={p} />
           ))}
         </div>
       )}

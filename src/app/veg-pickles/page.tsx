@@ -1,10 +1,9 @@
-import ProductListingPage from "@/components/ProductListingPage";
+import ShopGrid from "@/components/ShopGrid";
 
 export const metadata = {
   title: "Veg Pickles",
-  description: "Avakaya, Gongura, and vegetarian Telangana pickles from Lachava.",
 };
 
 export default function VegPicklesPage() {
-  return <ProductListingPage category="veg" />;
+  return <ShopGrid category="veg" />;
 }

@@ -8,13 +8,7 @@ import {
   ProductTag,
   TAG_LABELS,
 } from "@/types/product";
-import Image from "next/image";
 import { slugify, validateProduct } from "@/lib/product-admin";
-import {
-  PRODUCT_IMAGE_BY_SLUG,
-  getDefaultImageForSlug,
-  resolveProductImage,
-} from "@/lib/product-images";
 
 const TAGS = Object.keys(TAG_LABELS) as NonNullable<ProductTag>[];
 
@@ -31,10 +25,7 @@ export default function AdminProductEditor({
   onClose,
   onSaved,
 }: Props) {
-  const [product, setProduct] = useState<PickleProduct>({
-    ...initial,
-    imagePath: initial.imagePath || getDefaultImageForSlug(initial.slug),
-  });
+  const [product, setProduct] = useState<PickleProduct>({ ...initial, imagePath: "" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -91,7 +82,7 @@ export default function AdminProductEditor({
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(product),
+        body: JSON.stringify({ ...product, imagePath: "" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Save failed");
@@ -137,45 +128,6 @@ export default function AdminProductEditor({
             </label>
           </div>
 
-          <div className="rounded-xl border border-border p-4 space-y-3">
-            <span className="text-xs font-semibold text-muted uppercase">Product photo</span>
-            <div className="relative h-40 w-full max-w-xs rounded-lg overflow-hidden bg-surface">
-              {resolveProductImage(product) ? (
-                <Image
-                  src={resolveProductImage(product)!}
-                  alt={product.name || "Preview"}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <p className="p-4 text-xs text-muted">No photo — gradient shown on shop</p>
-              )}
-            </div>
-            <label className="block">
-              <span className="text-xs text-muted">Image path (file in /public)</span>
-              <select
-                value={product.imagePath || ""}
-                onChange={(e) => update("imagePath", e.target.value)}
-                className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
-              >
-                <option value="">None — use gradient</option>
-                {Object.entries(PRODUCT_IMAGE_BY_SLUG).map(([slug, path]) => (
-                  <option key={slug} value={path}>
-                    {slug} → {path}
-                  </option>
-                ))}
-                {product.imagePath &&
-                  !Object.values(PRODUCT_IMAGE_BY_SLUG).includes(product.imagePath) && (
-                    <option value={product.imagePath}>{product.imagePath}</option>
-                  )}
-              </select>
-            </label>
-            <p className="text-[11px] text-muted">
-              Add files to <code className="bg-surface px-1 rounded">public/products/{"{slug}"}.jpeg</code>{" "}
-              — names must match product slug.
-            </p>
-          </div>
-
           <label className="block">
             <span className="text-xs font-semibold text-muted uppercase">Slug</span>
             <input
@@ -186,39 +138,20 @@ export default function AdminProductEditor({
             />
           </label>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <label className="block">
-              <span className="text-xs font-semibold text-muted uppercase">Subtitle (EN)</span>
-              <input
-                value={product.subtitle}
-                onChange={(e) => update("subtitle", e.target.value)}
-                className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-semibold text-muted uppercase">Subtitle (TE)</span>
-              <input
-                value={product.subtitleTelugu ?? ""}
-                onChange={(e) => update("subtitleTelugu", e.target.value)}
-                className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
-              />
-            </label>
-          </div>
-
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Description (EN)</span>
-            <textarea
-              value={product.description}
-              onChange={(e) => update("description", e.target.value)}
-              rows={4}
+            <span className="text-xs font-semibold text-muted uppercase">Subtitle</span>
+            <input
+              value={product.subtitle}
+              onChange={(e) => update("subtitle", e.target.value)}
               className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
             />
           </label>
+
           <label className="block">
-            <span className="text-xs font-semibold text-muted uppercase">Description (TE)</span>
+            <span className="text-xs font-semibold text-muted uppercase">Description</span>
             <textarea
-              value={product.descriptionTelugu ?? ""}
-              onChange={(e) => update("descriptionTelugu", e.target.value)}
+              value={product.description}
+              onChange={(e) => update("description", e.target.value)}
               rows={4}
               className="mt-1 w-full rounded-lg border border-border px-3 py-2 text-sm"
             />

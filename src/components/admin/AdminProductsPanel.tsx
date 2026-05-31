@@ -22,18 +22,8 @@ export default function AdminProductsPanel() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
-    void fetch("/api/admin/products")
-      .then((res) => res.json())
-      .then((data) => {
-        if (cancelled) return;
-        setProducts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    load();
+  }, [load]);
 
   const filtered =
     filter === "all" ? products : products.filter((p) => p.category === filter);

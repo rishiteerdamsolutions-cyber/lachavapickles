@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminToken, isAdminConfigured, isAdminRequest } from "@/lib/admin-auth";
+import { createAdminToken, isAdminRequest } from "@/lib/admin-auth";
 
 const COOKIE = "admin_session";
 const MAX_AGE = 24 * 60 * 60;
@@ -17,27 +17,21 @@ function sessionCookie(token: string) {
 }
 
 export async function GET(req: NextRequest) {
-  return NextResponse.json({
-    authenticated: isAdminRequest(req),
-    configured: isAdminConfigured(),
-  });
+  return NextResponse.json({ authenticated: isAdminRequest(req) });
 }
 
 export async function POST(req: NextRequest) {
   try {
     const { username, password } = await req.json();
-    if (!isAdminConfigured()) {
+    const adminUser = process.env.ADMIN_USERNAME ?? "";
+    const adminPass = process.env.ADMIN_PASSWORD ?? "";
+
+    if (!adminUser || !adminPass) {
       return NextResponse.json(
-        {
-          error:
-            "Admin is not configured on the server. Add ADMIN_USERNAME and ADMIN_PASSWORD in Vercel → Project → Settings → Environment Variables, then redeploy.",
-        },
+        { error: "Admin credentials not configured" },
         { status: 503 }
       );
     }
-
-    const adminUser = process.env.ADMIN_USERNAME!;
-    const adminPass = process.env.ADMIN_PASSWORD!;
 
     if (username !== adminUser || password !== adminPass) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { Order } from "@/lib/orders-db";
-import { dtdcWhatsAppUrl } from "@/lib/dtdc-whatsapp";
-import { Truck } from "lucide-react";
+import { dtdcWhatsAppUrl, DTDC_CONTACT_NAME } from "@/lib/dtdc-whatsapp";
+import { MessageCircle } from "lucide-react";
 
 interface Props {
   order: Order;
@@ -34,24 +34,24 @@ export default function SendToDtdcButton({ order, onSent }: Props) {
         href={dtdcWhatsAppUrl(order)}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-semibold text-ink hover:border-accent/40 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-[#25D366] px-4 py-2.5 text-xs font-semibold text-white hover:opacity-90 transition-opacity"
       >
-        <Truck className="h-3.5 w-3.5" />
-        Send delivery to DTDC (WhatsApp)
+        <MessageCircle className="h-4 w-4" />
+        Send to DTDC — {DTDC_CONTACT_NAME}
       </a>
       {!sent && (
         <button
           type="button"
           onClick={handleMarkSent}
           disabled={loading}
-          className="rounded-lg bg-forest px-3 py-2 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-50"
+          className="rounded-lg border border-border px-3 py-2.5 text-xs font-semibold text-ink hover:border-brand/40 disabled:opacity-50"
         >
-          {loading ? "…" : "Mark sent"}
+          {loading ? "…" : "Mark as sent to DTDC"}
         </button>
       )}
       {sent && (
-        <span className="inline-flex items-center rounded-lg bg-forest-soft px-3 py-2 text-xs font-medium text-forest">
-          DTDC sent
+        <span className="inline-flex items-center rounded-lg bg-forest-soft px-3 py-2.5 text-xs font-medium text-forest">
+          Sent to DTDC
         </span>
       )}
     </div>

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-border bg-ink text-surface pb-[env(safe-area-inset-bottom)]">
+    <footer className="mt-auto hidden border-t border-border bg-brand text-surface pb-[env(safe-area-inset-bottom)] lg:block">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
@@ -35,9 +35,6 @@ export default function Footer() {
               <Link href="/story" className="hover:text-white transition-colors">
                 Our story
               </Link>
-              <Link href="/quotation" className="hover:text-white transition-colors">
-                Quotation
-              </Link>
             </div>
           </div>
 
@@ -47,9 +44,10 @@ export default function Footer() {
             </h3>
             <div className="flex flex-col gap-2 text-sm text-surface/70">
               <p>Husnabad, Telangana 503001</p>
-              <a href="tel:+919581963980" className="hover:text-white transition-colors">
-                +91 95819 63980
+              <a href="tel:+916302112848" className="hover:text-white transition-colors">
+                +91 63021 12848
               </a>
+              <p>PhonePe / GPay: 63021 12848</p>
               <a
                 href="mailto:orders@lachavapickles.com"
                 className="hover:text-white transition-colors"

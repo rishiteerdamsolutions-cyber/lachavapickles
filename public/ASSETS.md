@@ -1,9 +1,10 @@
-# Brand assets
+# Brand assets only
+
+Drop your files here (no other images are used on the site):
 
 | File | Purpose |
 |------|---------|
-| `logo.png` | Navbar logo, social preview |
-| `favicon.png` | Source for favicon (also used as PNG icon) |
-| `favicon.ico` | Browser tab icon (generated from `favicon.png`) |
+| `logo.png` | Navbar & branding (optional: keep `logo.svg` as fallback) |
+| `favicon.ico` | Browser tab icon |
 
-`src/app/favicon.ico` is kept in sync for Next.js App Router.
+Until `logo.png` is added, the site shows `logo.svg` or the wordmark **Lachava**.

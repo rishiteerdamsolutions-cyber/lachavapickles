@@ -40,3 +40,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local duplicates / uploads (canonical images in public/products/)
+public/WhatsApp*/
+public/amla.jpeg
+public/bitterguard.jpeg
+public/chicken.jpeg
+public/fish.jpeg
+public/lemon.jpeg
+public/mango.jpeg
+public/tomato.jpeg
+/LACHAVA ONSITE AHA/

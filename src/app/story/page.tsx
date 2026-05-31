@@ -18,7 +18,7 @@ export default function StoryPage() {
       <p className="mt-10 text-ink-muted leading-relaxed">
         Lachava Telangana Pickles began not in a factory, but in a kitchen in Nizamabad — where our
         grandmother, <strong className="text-ink">Lachavamma</strong>, would spend entire summers
-        pickling mangoes, gongura, and tamarind the way her mother taught her.
+        pickling mamidikaya, chinthakaya, and nimmakaya the way her mother taught her.
       </p>
       <p className="mt-6 text-ink-muted leading-relaxed">
         Since generations, our family has been grinding spices on stone, pickling in earthen jars,
